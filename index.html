@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <style media="screen">
+            html {
+                height: 100%;
+                width: 100%;
+            }
+            body {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                background-color: #000;
+            }
+            body.red {
+                background-color: red;
+            }
+            #canvas {
+                margin: 20px;
+                /* width: calc(100% - 40px);
+                height: calc(100% - 40px); */
+                background-color: #FFF;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas" style=""></canvas>
+        <script type="text/javascript">
+
+            const mobile = true;
+
+            let canvas = null;
+            let ctx = null;
+            let body = null;
+            let recording = false;
+            let previousCoord = {
+                x: 0,
+                y: 0,
+            };
+
+            const draw = (x, y) => {
+                console.log("draw", `${previousCoord.x} -> ${x}`, `${previousCoord.y} -> ${y}`);
+                ctx.beginPath();
+                ctx.moveTo(previousCoord.x, previousCoord.y);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.closePath();
+            };
+
+
+
+            // window.onload(function() {
+            //     console.log("loaded");
+            // });
+
+            window.addEventListener('load', function() {
+                canvas = document.getElementById("canvas");
+                ctx = canvas.getContext('2d');
+                body = document.getElementsByTagName("body")[0];
+
+                let startEvent = null;
+                let moveEvent = null;
+                let endEvent = null;
+
+                if(mobile) {
+                    startEvent = "touchstart";
+                    moveEvent = "touchmove";
+                    endEvent = "touchend";
+                } else {
+                    startEvent = "mousedown";
+                    moveEvent = "mousemove";
+                    endEvent = "mouseup";
+                }
+
+                canvas.addEventListener(startEvent, function(e) {
+                    console.log(startEvent, e);
+                    recording = true;
+                    body.classList = "red";
+                    previousCoord.x = e.offsetX;
+                    previousCoord.y = e.offsetY;
+                }, true);
+
+                canvas.addEventListener(moveEvent, function(e) {
+                    if(recording) {
+                        console.log(moveEvent, e);
+                        draw(e.offsetX, e.offsetY);
+                        previousCoord.x = e.offsetX;
+                        previousCoord.y = e.offsetY;
+                    }
+                }, true);
+
+                canvas.addEventListener(endEvent, function(e) {
+                    console.log(endEvent, e);
+                    body.classList = "";
+                    recording = false;
+                }, true);
+            })
+
+        </script>
+    </body>
+</html>
