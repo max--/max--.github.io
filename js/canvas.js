@@ -65,6 +65,33 @@ var canvas = {
                 ctx.stroke();
                 self.isEmpty = false;
             }
+
+            document.body.addEventListener("touchmove", function (e) {
+                if (e.target == canvas) {
+                  e.preventDefault();
+                }
+              }, false);
+              
+            canvasElt.addEventListener('touchstart', touchDown);  //false
+            canvasElt.addEventListener('touchend', touchUp); //false
+
+            function touchDown(e){
+                ctx.beginPath();
+                ctx.moveTo(e.touches[0].pageX, e.touches[0].pageY);
+                canvasElt.addEventListener('touchmove', draw); // false
+            }
+
+            function touchUp(e){
+                canvasElt.removeEventListener('touchmove', draw);
+                draw(e);
+            }
+
+            function draw(e){
+                ctx.lineTo(e.touches[0].pageX, e.touches[0].pageY);
+                ctx.stroke();
+                self.isEmpty = false;
+            }
+
         } else {
             alert("Signature manuelle indisponible");
         }

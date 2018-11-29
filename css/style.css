@@ -95,6 +95,15 @@ h1 span{
     .slides img {
         height: 200px;
     }
+
+    .slides figcaption {
+        max-width: 250px;
+        font-size: 1em;
+        /* text-overflow: visible; */
+        word-wrap: break-word;
+
+    }
+
 }
 
 #swipe_slider {
@@ -166,7 +175,7 @@ padding: 10px 15px;
 .encart {
     display:none;
     width:25%;
-    height: 586px;
+    height: 590px;
     background-color:#F5F5F5;
     border: 1px solid #82878F;
     border-radius: 2px;
@@ -230,7 +239,7 @@ padding: 10px 15px;
 
     .encart {
         width: 50%;
-        height: 400px;
+        height: 390px;
     }
 }
 

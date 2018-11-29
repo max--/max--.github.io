@@ -33,9 +33,6 @@ StorageAPI
 
 # TODO
 
-Slider
-- touche espace : pause slider
-
 Marqueurs
 - modifier classe des icônes --> ancienne classe + nouvelle classe
 - faire cluster icônes
