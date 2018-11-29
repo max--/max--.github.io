@@ -1,0 +1,55 @@
+
+# Objects
+
+Map
+    - init :
+        L.map
+        Map.add(L.tileLayer)
+    - addMarker :
+        Map.add(L.marker)
+
+Marqueur : L.DivIcon.extend -> green / red / orange
+    - getIcon(availability)
+
+StationsAPI
+    - init(contract) : apiKey / apiUrl / stations[]
+    - getStations() : error / stations
+
+StorageAPI
+    - save(reservation)
+        * local
+            "reservationUserName" <--> reservation.name
+            "reservationUserFirstName" <--> reservation.name
+        * session
+            "reservationStationNumber" <--> reservation.number
+            "reservationEndDate" <--> reservation.resaTimer
+    - load(reservation)
+        * comme save mais à l'envers
+        * nom connu <--> localStorage.getItem("name") !== null
+        * réservation en cours <--> sessionStorage.getItem("stationName") !== null
+
+
+
+
+# TODO
+
+Slider
+- touche espace : pause slider
+
+Marqueurs
+- modifier classe des icônes --> ancienne classe + nouvelle classe
+- faire cluster icônes
+
+Map
+- faire fonction pour resize MAP (map l.58-59 + reservation l.75-76)
+- ajouter attribut available = true/false pour la function CheckAvailability 
+
+
+Réservations
+- faire un attribut isActive pour déterminer si résa déjà en cours (voir méthode checkIsActive))
+- canvas tactile
+
+# BUG
+- Map.selectedStation --> affiche [object Object] sur la page; Avec displayResume $(".recap_resa").text("Réservation en cours station numéro " + Map.selectedStation + " par " + Reservation.firstName + " " + Reservation.name);
+- temps de latence : une seconde avant que le timer se relance
+- quand zoom sur une station, on ne peut plus déplacer la map

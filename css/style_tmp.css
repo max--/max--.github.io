@@ -1,0 +1,100 @@
+html, body {
+    height: 100%;
+}
+
+.slider_wrapper {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slider_container {
+    display: inline-block;
+    width: 500px; /* largeurs dépendantes */
+    height: 300px;
+    overflow: hidden;
+}
+
+.slider {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 3000px;
+
+    animation-name: slider_animation;
+    animation-duration: 5s;
+    animation-delay: 2s;
+    animation-iteration-count: infinite;
+    animation-fill-mode: backwards;
+}
+
+.slides {
+    width: 500px; /* largeurs dépendantes */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#slider_1 {
+    background-image: url("images/img_velotoulouse1_resize.jpg");
+}
+
+#slider_2 {
+    background-image: url("images/img_velotoulouse2_resize.jpg");
+}
+
+#slider_3 {
+    background-image: url("images/img_velotoulouse3_resize.jpg");
+}
+
+#slider_4 {
+    background-image: url("images/img_velotoulouse4.jpg");
+}
+
+@media screen and (max-width: 550px) {
+    .slider_container {
+        width: 250px;
+    }
+    .slider {
+        animation-name: slider_animation_small;
+    }
+    .slides {
+        width: 250px; /* largeur div.slides responsive */
+    }
+}
+
+@keyframes slider_animation {
+    0% {
+        margin-left: 0;
+    }
+    25% {
+        margin-left: -500px; /* - 1x largeur div.slides normale */
+    }
+    50% {
+        margin-left: -1000px;
+    }
+    75% {
+        margin-left: -1500px;
+    }
+    100% {
+        margin-left: 0;
+    }
+}
+@keyframes slider_animation_small {
+    0% {
+        margin-left: 0;
+    }
+    25% {
+        margin-left: -250px; /* -1x largeur div.slides responsive */
+    }
+    50% {
+        margin-left: -500px;
+    }
+    75% {
+        margin-left: -750px;
+    }
+    100% {
+        margin-left: 0;
+    }
+}
