@@ -37,19 +37,23 @@ $(document).ready(function() {
     // Canvas
     canvas.init();
 
+    var nameValue = $('#name');
+    var firstNameValue = $('#first_name');
+    var stationNameValue = $('#name_station');
+
     // Réservation --> au clic
     reservationButton.on("click", function() {
+        console.log(stationNameValue.val(), nameValue.val(), firstNameValue.val());
         if((sessionStorage.getItem("reservationStationName") && sessionStorage.getItem("reservationEndDate"))){
             var confirmReservation = confirm("Une réservation est déjà en cours. Voulez-vous l'écraser ?");
-            if(confirmReservation){
+            if(confirmReservation) {
                 endDateValue = new Date(Date.now() + Reservation.timerLifetime).getTime();
-                Reservation.addNewReservation(nameValue.val(), firstNameValue.val(), stationNameValue.text(), endDateValue);
+                StationsAPI.addAvailability(Reservation.station);
+                Reservation.addNewReservation(nameValue.val(), firstNameValue.val(), stationNameValue.text(), endDateValue, Map.selectedStation);
             }
         } else {
-            console.log("reservationButton:click", $('#name').val(), $('#first_name').val(), Reservation, canvas);
-            nameValue = $('#name');
-            firstNameValue = $('#first_name');
-            stationNameValue = $('#name_station');
+            console.log("reservationButton:click", nameValue.val(), firstNameValue.val(), Reservation, canvas);
+
             endDateValue = new Date(Date.now() + Reservation.timerLifetime).getTime();
             if((nameValue.val() ==="") || (firstNameValue.val()==="") || canvas.isEmpty){
                 $('#comments').css("display", "block");
@@ -59,7 +63,7 @@ $(document).ready(function() {
                 $('#confirmation_reservation').text("Un vélo a bien été réservé")
                 $('#comments').css("display", "none");
                 $(".resume").css('display', 'block');
-                Reservation.addNewReservation();
+                Reservation.addNewReservation(nameValue.val(), firstNameValue.val(), stationNameValue.text(), endDateValue, Map.selectedStation);
             }
         }
 

@@ -28,6 +28,7 @@ const Map = {
                 // NOTE : when reservation expires -> station.available_bikes++;
                 if(Reservation.stationName && station.name == Reservation.stationName) {
                     station.available_bikes--;
+                    Map.selectedStation = station;
                 }
 
                 Map.addMarker(station);

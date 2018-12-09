@@ -47,8 +47,16 @@ const StationsAPI = {
 
     // Soustraire nb de vélos dispo en cas de réservation
     subtractAvailability(station) {
-        if (Reservation.stationName) {
-            station.available_bikes--;
+        station.available_bikes--;
+        if(station.name == Map.selectedStation.name) {
+            $("#available_bikes").text(station.available_bikes);
+        }
+        StationsAPI.checkAvailability(station);
+    },
+
+    addAvailability(station) {
+        station.available_bikes++;
+        if(station.name == Map.selectedStation.name) {
             $("#available_bikes").text(station.available_bikes);
         }
         StationsAPI.checkAvailability(station);
