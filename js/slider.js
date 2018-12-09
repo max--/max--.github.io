@@ -73,18 +73,18 @@ var slider = {
     },
 
     pauseSlider: function () {
-        // pauseButton.removeClass("fa-pause");
-        // pauseButton.addClass("fa-play");
-        pauseButton.toggleClass("fa-play");
+        pauseButton.removeClass("fa-pause");
+        pauseButton.addClass("fa-play");
+        // pauseButton.toggleClass("fa-play");
         slider.playing = false;
         slider.stop_defil();
 
     },
 
     playSlider: function(){
-        // pauseButton.removeClass("fa-play");
-        // pauseButton.addClass("fa-pause");
-        pauseButton.toggleClass("fa-play");
+        pauseButton.removeClass("fa-play");
+        pauseButton.addClass("fa-pause");
+        // pauseButton.toggleClass("fa-play");
         slider.playing = true;
         slider.play_defil();
     },
@@ -116,6 +116,5 @@ var slider = {
         } else {
             slider.width = 550;
         }
-        console.log("width: ", slider.width);
     }
 }

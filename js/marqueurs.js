@@ -26,8 +26,3 @@ var Marqueur = {
     },
 
 }
-
-// # CLuster
-// var markerClusters = new L.MarkerClusterGroup();
-// markerClusters.addLayer(L.marker([43.6, 1.433333]));
-// // add more markers here...

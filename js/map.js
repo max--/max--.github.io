@@ -1,14 +1,15 @@
-// Map
-// var stationsInfos = new StationsAPI();
-// var marqueurs = [];
+var marqueurs = [];
+
 
 var Map = {
     selectedStation: null,
     reference: null,
+    markerClusterGroup: null,
 
     init: function() {
         console.log("Map.init.this", this);
         this.reference = L.map('mapid').setView([43.6, 1.433333], 13); //Afficher carte Toulouse
+        this.markerClusterGroup = L.markerClusterGroup();
 
         //ajout Mapbox Streets tile layer
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -18,7 +19,7 @@ var Map = {
             accessToken: 'pk.eyJ1IjoibWFyaWUzNzMxIiwiYSI6ImNqbnVsbTAwZjA2ZWoza3BueDYzZWExMHkifQ.XnCZw5jXMzssHhjWG7a-lA'
         }).addTo(this.reference);
 
-        // Récupérer stations Toulouse + ajouter marqueurs
+        // Récupérer stations Toulouse
         StationsAPI.getStations(function(error) {
             if(error == null) {
                 StationsAPI.stations.forEach(function(station) {
@@ -33,15 +34,16 @@ var Map = {
                     station.availability = Math.round((station.available_bikes / station.bike_stands) * 100);
                     Map.addMarker(station);
                 });
+                Map.addMarkerClustersGroup();
             }
         });
-        // mymap.addLayer(markerClusters)
     },
 
+    // Ajouter marqueurs
     addMarker : function(station) {
         var divIcon = Marqueur.getIcon(station.availability);
 
-        L.marker([station.position.lat, station.position.lng], {icon: divIcon}).on('click', function(e) {
+        var newMarker = L.marker([station.position.lat, station.position.lng], {icon: divIcon}).on('click', function(e) {
             Map.selectedStation = station;
             console.log(station.name + station.address + " full: "+ station.bike_stands+ " velo dispo: " +station.available_bikes, e.latlng);
             $(".encart").css("display", "block");
@@ -53,16 +55,23 @@ var Map = {
             $("#available_bikes").text(station.available_bikes);
 
             StationsAPI.checkAvailability(station);
-            console.log("checkAvailability");
-            
-            Map.reference.invalidateSize(true); 
-            Map.reference.setView(e.latlng, Map.reference.getZoom());
-        }).addTo(this.reference);
+            // console.log("checkAvailability");
 
-        // marqueurs.push(L.marker);
-        // console.log(marqueurs);
+            Map.reference.invalidateSize(true);
+            Map.reference.setView(e.latlng, Map.reference.getZoom());
+        });
+        this.markerClusterGroup.addLayer(newMarker);
+        // .addTo(this.reference);
+
+        marqueurs.push(newMarker);
     },
 
+    // Finaliser l'ajout des clusters
+    addMarkerClustersGroup : function() {
+        this.reference.addLayer(this.markerClusterGroup);
+    },
+
+    // Centrage de la map
     centerLeafletMapOnMarker: function(map, marker) {
         var latLngs = [ marker.getLatLng() ];
         var markerBounds = L.latLngBounds(latLngs);

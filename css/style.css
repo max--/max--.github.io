@@ -7,7 +7,6 @@ body {
 
 h1{
     text-align: center;
-    /* background-color: #FCC318; */
     color: #A5282B;
     padding: 10px;
     margin:0;
@@ -42,14 +41,6 @@ h1 span{
 
 .slides {
     width: 550px; /*largeurs dépendantes */
-    /* height: 300px; */
-
-    /* animation-name: slider_animation;
-    animation-duration: 20s;
-    animation-delay: 2s;
-    animation-iteration-count: infinite;
-    animation-fill-mode: backwards;
-    animation-play-state: paused; */
 }
 
 .slides figure {
@@ -70,7 +61,6 @@ h1 span{
     transform:translate(-50%);
     z-index:200;
     width:450px;
-    /* color: #8A1F11; */
     color: #010101;
     font-size : 1.3em;
     text-align:center;
@@ -99,7 +89,6 @@ h1 span{
     .slides figcaption {
         max-width: 250px;
         font-size: 1em;
-        /* text-overflow: visible; */
         word-wrap: break-word;
 
     }
@@ -213,11 +202,21 @@ padding: 10px 15px;
 }
 
 #comments {
+    /* display:none; */
     padding: 10px;
     text-align: center;
     color: white;
     margin-bottom: 15px;
     background-color: #FCC318;
+}
+
+#confirmation_reservation {
+    display: none;
+    padding: 10px;
+    text-align: center;
+    color: white;
+    margin-bottom: 15px;
+    background-color: #A5282B;
 }
 
 /* Canvas */

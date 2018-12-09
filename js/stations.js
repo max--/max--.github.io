@@ -4,6 +4,7 @@ var StationsAPI = {
     contract: "toulouse",
     stations: [],
 
+    // Données API
     init(contract) {
         this.apiKey = "b0e5b1ea5fa5a334858b4bf7a6cdc9c1ae3088ca";
         this.apiUrl = "https://api.jcdecaux.com/vls/v1/stations";
@@ -14,6 +15,7 @@ var StationsAPI = {
         this.stations = [];
     },
 
+    // Récupération des données (stations)
     getStations(next) {
         var error = null;
         var stationsParsed = [];
@@ -32,10 +34,6 @@ var StationsAPI = {
                         console.error(`Impossible de récupérer la liste des stations : ${error}`);
                     } else {
                         this.stations = stationsParsed;
-                        // Commenté car autant ne faire qu'une itération sur l'ensemble des stations, côté Map.init() <3
-                        // this.stations.forEach(function(station) {
-                        //     station.availability = Math.round((station.available_bikes / station.bike_stands) * 100);
-                        // });
                         console.log(`Récupération de la liste des stations effectuée : ${this.stations.length} station(s) récupérées`);
                     }
                 } catch(err) {
@@ -43,11 +41,11 @@ var StationsAPI = {
                     console.error(`Impossible de récupérer la liste des stations : ${error}`);
                 }
             }
-
             next(error);
         }.bind(this));
     },
 
+    // Soustraire nb de vélos dispo en cas de réservation
     subtractAvailability(station) {
         if (Reservation.stationName) {
             station.available_bikes -- ;
@@ -56,6 +54,7 @@ var StationsAPI = {
         StationsAPI.checkAvailability(station);
     },
 
+    // Vérifier disponibilité d'une station
     checkAvailability: function (station){
         if (station.available_bikes === 0){
             document.getElementById('resaButton').disabled= true;
@@ -67,9 +66,6 @@ var StationsAPI = {
             document.getElementById('resaButton').disabled= false;
             $('#resaButton').css("cursor", "pointer");
             $('#comments').css("display", "none");
-
-            // Commenté car ça cache tout le temps les commentaires sinon
-            // document.getElementById('comments').style.display = "none";
         }
     },
 

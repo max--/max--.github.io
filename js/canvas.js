@@ -1,99 +1,84 @@
-// var Canvas = function(idCanvas) {
-//     this.idCanvas = idCanvas;
-//     this.isEmpty = true;
-//     this.canvasElement = null;
-// };
-
-// Canvas.prototype.init = function() {
-//     this.canvasElement = document.getElementById(this.idCanvas);
-//     if (this.canvasElement.getContext) {
-//         var ctx = this.canvasElement.getContext('2d');
-
-//         this.canvasElement.addEventListener('mousedown', pointerDown.bind(this));  //false
-//         this.canvasElement.addEventListener('mouseup', pointerUp.bind(this)); //false
-
-//         function pointerDown(e){
-//             console.log("pointerDown()", this);
-//             ctx.beginPath();
-//             ctx.moveTo(e.offsetX, e.offsetY);
-//             this.canvasElement.addEventListener('mousemove', draw.bind(this), true); // false
-//         }
-
-//         function pointerUp(e){
-//             console.log("pointerUp()", this);
-//             this.canvasElement.removeEventListener('mousemove', draw.bind(this), true);
-//             // draw(e);
-//         }
-
-//         function draw(e){
-//             console.log("draw()", this);
-//             ctx.lineTo(e.offsetX, e.offsetY);
-//             ctx.stroke();
-//             this.isEmpty = false;
-//         }
-//     } else {
-//         alert("Signature manuelle indisponible");
-//     }
-// };
-
-
 var canvas = {
     isEmpty : true,
 
     init : function(){
         canvasElt = document.getElementById('canvas');
         var self = this;
+
         if (canvasElt.getContext) {
             var ctx = canvasElt.getContext('2d');
+            var mousePos = {
+                x:0,
+                y:0
+            };
+            var lastPos = mousePos;
 
-            canvasElt.addEventListener('mousedown', pointerDown);  //false
-            canvasElt.addEventListener('mouseup', pointerUp); //false
+            canvasElt.addEventListener('mousedown', pointerDown, false);
+            canvasElt.addEventListener('mouseup', pointerUp, false);
+            canvasElt.addEventListener("touchstart", touchDown, false);
+            canvasElt.addEventListener("touchend", touchUp, false);
+            canvasElt.addEventListener("touchmove", touchMove, false);
 
             function pointerDown(e){
+                lastPos = getMousePos(canvasElt, e);
                 ctx.beginPath();
-                ctx.moveTo(e.offsetX, e.offsetY);
-                canvasElt.addEventListener('mousemove', draw); // false
+                ctx.moveTo(lastPos.x, lastPos.y);
+                canvasElt.addEventListener('mousemove', draw, false);
             }
 
             function pointerUp(e){
                 canvasElt.removeEventListener('mousemove', draw);
-                draw(e);
             }
 
             function draw(e){
-                ctx.lineTo(e.offsetX, e.offsetY);
+                mousePos = getMousePos(canvasElt, e);
+                ctx.lineTo(mousePos.x, mousePos.y);
                 ctx.stroke();
+                lastPos = mousePos;
                 self.isEmpty = false;
             }
 
-            document.body.addEventListener("touchmove", function (e) {
-                if (e.target == canvas) {
-                  e.preventDefault();
-                }
-              }, false);
-              
-            canvasElt.addEventListener('touchstart', touchDown);  //false
-            canvasElt.addEventListener('touchend', touchUp); //false
+            // Obtenir position relative de la souris sur canvas
+            function getMousePos(canvasDom, mouseEvent) {
+                var rect = canvasDom.getBoundingClientRect(); //envoie la taille d'un élément et sa position relative par rapport à la zone d'affichage (viewport).
+                return {
+                    x: mouseEvent.clientX - rect.left,
+                    y: mouseEvent.clientY - rect.top
+                };
+            }
 
             function touchDown(e){
-                ctx.beginPath();
-                ctx.moveTo(e.touches[0].pageX, e.touches[0].pageY);
-                canvasElt.addEventListener('touchmove', draw); // false
+                mousePos = getTouchPos(canvasElt, e);
+                var touch = e.touches[0];
+                var mouseEvent = new MouseEvent("mousedown", {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvasElt.dispatchEvent(mouseEvent);
+            };
+
+            function touchUp(e) {
+                var mouseEvent = new MouseEvent("mouseup", {});
+                canvasElt.dispatchEvent(mouseEvent);
+            };
+
+            function touchMove(e){
+                var touch = e.touches[0];
+                var mouseEvent = new MouseEvent("mousemove", {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvasElt.dispatchEvent(mouseEvent);
             }
 
-            function touchUp(e){
-                canvasElt.removeEventListener('touchmove', draw);
-                draw(e);
+            // Obtenir position relative du toucher sur canvas
+            function getTouchPos(canvasDom, touchEvent) {
+                var rect = canvasDom.getBoundingClientRect();
+                return {
+                    x: touchEvent.touches[0].clientX - rect.left,
+                    y: touchEvent.touches[0].clientY - rect.top
+                };
             }
-
-            function draw(e){
-                ctx.lineTo(e.touches[0].pageX, e.touches[0].pageY);
-                ctx.stroke();
-                self.isEmpty = false;
-            }
-
-        } else {
-            alert("Signature manuelle indisponible");
         }
-    },
+    }
 }

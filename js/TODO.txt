@@ -33,9 +33,16 @@ StorageAPI
 
 # TODO
 
+StationsAPI
+- diviser l'objet en 2 : infos clé API + stations récoltées
+- next(error) --> à expliquer
+- bind(this) --> à expliquer
+
+Slider
+- revoir init() --> les attributs 
+
 Marqueurs
 - modifier classe des icônes --> ancienne classe + nouvelle classe
-- faire cluster icônes
 
 Map
 - faire fonction pour resize MAP (map l.58-59 + reservation l.75-76)
@@ -44,7 +51,9 @@ Map
 
 Réservations
 - faire un attribut isActive pour déterminer si résa déjà en cours (voir méthode checkIsActive))
-- canvas tactile
+- addNewReservation --> voir pour le stopTimer
+- event onclick plutôt que submit ? (avec e.preventDefault)
+- #confirmation_reservation --> doublon index.js et storage.js (load)
 
 # BUG
 - Map.selectedStation --> affiche [object Object] sur la page; Avec displayResume $(".recap_resa").text("Réservation en cours station numéro " + Map.selectedStation + " par " + Reservation.firstName + " " + Reservation.name);

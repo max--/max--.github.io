@@ -13,11 +13,13 @@ var Reservation = {
         // this.isActive = isActive;
     },
 
+    // Remplir les champs automatiquement
     fillInputs() {
         $('#name').val(Reservation.name);
         $('#first_name').val( Reservation.firstName);
     },
 
+    // Afficher les informations de la réservation en cours
     displayResume() {
         if(Reservation.stationName) {
             stopTimeOut = true;
@@ -33,6 +35,7 @@ var Reservation = {
     //     }
     // },
 
+        // Timer
     startTimer: function(){
         timerInterval = setInterval(this.checkTimer, 1000);
     },
@@ -56,6 +59,7 @@ var Reservation = {
             timeout = setTimeout(function () {
                 console.log("timeout");
                 $(".resume").css("display", "none");
+                $("#confirmation_reservation").css('display', 'none');
                 Map.reference.invalidateSize(true);
                 Map.reference.setView([43.6, 1.433333], 13);       
             }, 3000);
@@ -100,11 +104,13 @@ var Reservation = {
         };
 
     },
-
+    
+    // Ajout d'une nouvelle réservation
     addNewReservation: function(){
         Reservation.init(nameValue.val(), firstNameValue.val(), stationNameValue.text(), endDateValue);
         StorageAPI.save(Reservation);
         Reservation.displayResume();
+        // ajouter un if resa déjà en cours --> stopTimer ???
         Reservation.stopTimer();
         console.log("Stop Timer");
         Reservation.startTimer();

@@ -1,10 +1,6 @@
 // Slider
 var pauseButton = null;
 
-// Canvas
-// var canvas = new Canvas("canvas");
-
-
 // Réservation
 var reservationButton = null;
 var reservationResume = null;
@@ -38,7 +34,6 @@ $(document).ready(function() {
     reservationResume = $('.resume');
 
     // Slider
-    // slider.resizeSlider();
     slider.init();
     slider.play_defil();
     slider.listenKeyPress();
@@ -46,19 +41,14 @@ $(document).ready(function() {
     StorageAPI.load(Reservation);
     Reservation.displayResume();
 
-    if(Reservation.stationName) {
-        // Reservation.startTimer();
-        console.log("Réservation en cours détectée", Reservation);
-        $('#comments').text("Une réservation est déjà en cours.");
-        $('#comments').css("display", "block");
-    }
-
     // Map
     Map.init();
     window.Map = Map;
 
+    // Canvas
     canvas.init();
 
+    // Réservation --> au clic 
     reservationButton.on("click", function() {
         if((sessionStorage.getItem("reservationStationName") && sessionStorage.getItem("reservationEndDate"))){
             var confirmReservation = confirm("Une réservation est déjà en cours. Voulez-vous l'écraser ?");
@@ -75,7 +65,9 @@ $(document).ready(function() {
             if((nameValue.val() ==="") || (firstNameValue.val()==="") || canvas.isEmpty){
                 $('#comments').css("display", "block");
                 $('#comments').text("Merci de remplir tous les champs.");
-            } else {    
+            } else { 
+                $('#confirmation_reservation').css("display", "block");   
+                $('#confirmation_reservation').text("Un vélo a bien été réservé")
                 $('#comments').css("display", "none");
                 $(".resume").css('display', 'block');
                 Reservation.addNewReservation();
