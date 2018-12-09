@@ -3,6 +3,7 @@ var canvas = {
 
     init : function(){
         canvasElt = document.getElementById('canvas');
+        // canvasElt = $('#canvas')[0];
         var self = this;
 
         if (canvasElt.getContext) {

@@ -1,16 +1,26 @@
+// Conversion en mms
+var mms_day = 24 * 60 * 60 * 1000;
+var mms_hour = 60 * 60 * 1000;
+var mms_minute = 60 * 1000;
+var mms_second = 1000;
+
+const min = 0.2;
+
 var Reservation = {
     name: null,
     firstName: null,
     stationName: null,
     endDate: null,
-    // isActive : false,
+    timerLifetime: min * mms_minute,
+    timerInterval: null,
+    timeoutHolder: null,
+    stopTimeOut: true,
 
-    init(name, firstName, stationName, endDate, isActive) {
+    init(name, firstName, stationName, endDate) {
         this.name = name;
         this.firstName = firstName;
         this.stationName = stationName;
         this.endDate = endDate;
-        // this.isActive = isActive;
     },
 
     // Remplir les champs automatiquement
@@ -22,26 +32,19 @@ var Reservation = {
     // Afficher les informations de la réservation en cours
     displayResume() {
         if(Reservation.stationName) {
-            stopTimeOut = true;
+            Reservation.stopTimeOut = true;
             $(".recap_resa").text("Réservation en cours station numéro " + Reservation.stationName + " par " + Reservation.firstName + " " + Reservation.name);
             $(".resume").css('display', 'block')
         }
     },
 
-    // checkIsActive(){
-    //     if (sessionStorage.getItem("reservationStationName") && sessionStorage.getItem("reservationEndDate")){
-    //         isActive = true;
-    //         return isActive;
-    //     }
-    // },
-
-        // Timer
+    // Timer
     startTimer: function(){
-        timerInterval = setInterval(this.checkTimer, 1000);
+        Reservation.timerInterval = setInterval(Reservation.checkTimer, 1000);
     },
 
     stopTimer: function(){
-        clearInterval(timerInterval);
+        clearInterval(Reservation.timerInterval);
     },
 
     checkTimer: function (){
@@ -55,13 +58,12 @@ var Reservation = {
             $("#timer").text("Réservation expirée");
             StorageAPI.clearSession();
             $(".recap_resa").text("Aucune réservation en cours");
-            stopTimeOut = false;
-            timeout = setTimeout(function () {
-                console.log("timeout");
+            Reservation.stopTimeOut = false;
+            Reservation.timeout = setTimeout(function () {
                 $(".resume").css("display", "none");
                 $("#confirmation_reservation").css('display', 'none');
                 Map.reference.invalidateSize(true);
-                Map.reference.setView([43.6, 1.433333], 13);       
+                Map.reference.setView([43.6, 1.433333], 13);
             }, 3000);
         // } else {
             // pas de réservation en cours
@@ -104,19 +106,19 @@ var Reservation = {
         };
 
     },
-    
+
     // Ajout d'une nouvelle réservation
-    addNewReservation: function(){
-        Reservation.init(nameValue.val(), firstNameValue.val(), stationNameValue.text(), endDateValue);
+    addNewReservation: function(name, firstName, stationName, endDate){
+        if(Reservation.timeoutHolder) {
+            Reservation.stopTimer();
+        }
+        Reservation.init(name, firstName, stationName, endDate);
         StorageAPI.save(Reservation);
-        Reservation.displayResume();
-        // ajouter un if resa déjà en cours --> stopTimer ???
-        Reservation.stopTimer();
-        console.log("Stop Timer");
-        Reservation.startTimer();
         StationsAPI.subtractAvailability(Map.selectedStation);
-        if (stopTimeOut = true){
-            clearTimeout(timeout);
+        Reservation.displayResume();
+        Reservation.startTimer();
+        if (Reservation.stopTimeOut = true){
+            clearTimeout(Reservation.timeoutHolder);
             $("#timer").text("");
         }
     }

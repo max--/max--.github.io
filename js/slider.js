@@ -1,71 +1,94 @@
-var slider = {
-    width : null,
-
+const Slider = {
 
     init: function(){
-        slider.playing = true;
-        slider.elem = $(".slider");
-        slider.nbSlides = slider.elem.children().length;
-        slider.currentSlide = 0;
-        slider.isSliding = false;
+        this.elem = $(".slider");
+
+        this.playing = false;
+        this.isSliding = false;
+
+        this.width = 0;
+
+        // Durée de l'interval, en millisecondes
+        this.autoNextIntervalDuration = 5000;
+        // Permet de pouvoir arrêter l'execution de l'interval par la suite
+        this.autoNextIntervalHolder = null;
+
+        this.currentSlide = 0;
+        this.nbSlides = this.elem.children().length;
+
+        this.autoNextButton = $(".bouton_slider");
 
         $("#next").on("click", function(){
-            slider.next();
+            Slider.next();
         });
 
         $("#prev").on("click", function(){
-            slider.prev();
+            Slider.previous();
         });
 
-        pauseButton.on("click", function(){
-            if (slider.playing){
-                slider.pauseSlider();
+        this.autoNextButton.on("click", function(){
+            if (Slider.playing){
+                Slider.pauseSlider();
             } else {
-                slider.playSlider();
+                Slider.playSlider();
             }
         });
+
+        this.setSize();
+        this.startAutoNext();
+        this.listenKeyPress();
+        this.listenResize();
+    },
+
+    setSize : function(){
+        var pageWidth = $(window).width();
+        if(pageWidth < 610) {
+            this.width = 300;
+        } else {
+            this.width = 550;
+        }
     },
 
     next: function() {
-        if(!slider.isSliding) {
-            slider.stop_defil();
-            if(slider.currentSlide >= slider.nbSlides - 1) {
-                slider.currentSlide = 0;
+        if(!Slider.isSliding) {
+            Slider.stopAutoNext();
+            if(Slider.currentSlide >= Slider.nbSlides - 1) {
+                Slider.currentSlide = 0;
             } else {
-                slider.currentSlide++;
+                Slider.currentSlide++;
             }
-            slider.isSliding = true;
-            slider.elem.stop().animate({marginLeft: -slider.currentSlide * slider.width + "px"}, {
+            Slider.isSliding = true;
+            Slider.elem.stop().animate({marginLeft: -Slider.currentSlide * Slider.width + "px"}, {
                 duration: 1000,
                 complete: function() {
-                    slider.isSliding = false;
-                    if(!slider.playing){
-                        slider.stop_defil()
+                    Slider.isSliding = false;
+                    if(!Slider.playing){
+                        Slider.stopAutoNext()
                     } else {
-                    slider.play_defil();
+                        Slider.startAutoNext();
                     }
                 },
             });
         }
     },
 
-    prev: function() {
-        if(!slider.isSliding) {
-            slider.stop_defil();
-            if(slider.currentSlide <= 0) {
-                slider.currentSlide = slider.nbSlides - 1;
+    previous: function() {
+        if(!Slider.isSliding) {
+            Slider.stopAutoNext();
+            if(Slider.currentSlide <= 0) {
+                Slider.currentSlide = Slider.nbSlides - 1;
             } else {
-                slider.currentSlide--;
+                Slider.currentSlide--;
             }
-            slider.isSliding = true;
-            slider.elem.stop().animate({marginLeft: -slider.currentSlide * slider.width + "px"}, {
+            Slider.isSliding = true;
+            Slider.elem.stop().animate({marginLeft: -Slider.currentSlide * Slider.width + "px"}, {
                 duration: 1000,
                 complete: function() {
-                    slider.isSliding = false;
-                    if(!slider.playing){
-                        slider.stop_defil()
+                    Slider.isSliding = false;
+                    if(!Slider.playing){
+                        Slider.stopAutoNext()
                     } else {
-                    slider.play_defil();
+                        Slider.startAutoNext();
                     }
                 }
             });
@@ -73,48 +96,42 @@ var slider = {
     },
 
     pauseSlider: function () {
-        pauseButton.removeClass("fa-pause");
-        pauseButton.addClass("fa-play");
+        this.autoNextButton.removeClass("fa-pause");
+        this.autoNextButton.addClass("fa-play");
         // pauseButton.toggleClass("fa-play");
-        slider.playing = false;
-        slider.stop_defil();
-
+        this.playing = false;
+        this.stopAutoNext();
     },
 
     playSlider: function(){
-        pauseButton.removeClass("fa-play");
-        pauseButton.addClass("fa-pause");
+        this.autoNextButton.removeClass("fa-play");
+        this.autoNextButton.addClass("fa-pause");
         // pauseButton.toggleClass("fa-play");
-        slider.playing = true;
-        slider.play_defil();
+        this.playing = true;
+        this.startAutoNext();
     },
 
-    play_defil: function() {
-        slider.timer = window.setInterval(slider.next, 5000);
+    startAutoNext: function() {
+        this.autoNextIntervalHolder = window.setInterval(this.next, this.autoNextIntervalDuration);
     },
 
-    stop_defil: function() {
-        window.clearInterval(slider.timer);
-    },
+    stopAutoNext: function() {
+        window.clearInterval(this.autoNextIntervalHolder);
+    }, 
 
     listenKeyPress: function(){
         document.addEventListener("keydown", function(e){
             if(e.keyCode === 37){
-                slider.prev();
+                Slider.previous();
             }
             else if(e.keyCode === 39){
-                slider.next();
+                Slider.next();
             }
             console.log("Evènement clavier : " + e.type + ", touche : " + e.keyCode);
-        });    
+        });
     },
 
-    resizeSlider: function(){
-        var pageWidth = $(window).width();
-        if(pageWidth < 610) {
-            slider.width = 300;
-        } else {
-            slider.width = 550;
-        }
+    listenResize: function() {
+        window.onresize = this.setSize;
     }
 }

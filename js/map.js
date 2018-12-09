@@ -1,17 +1,13 @@
-var marqueurs = [];
-
-
-var Map = {
+const Map = {
     selectedStation: null,
     reference: null,
     markerClusterGroup: null,
 
     init: function() {
-        console.log("Map.init.this", this);
-        this.reference = L.map('mapid').setView([43.6, 1.433333], 13); //Afficher carte Toulouse
+        this.reference = L.map('mapid').setView([43.6, 1.433333], 13); // Afficher carte Toulouse
         this.markerClusterGroup = L.markerClusterGroup();
 
-        //ajout Mapbox Streets tile layer
+        // Ajout Mapbox Streets tile layer
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             maxZoom: 18,
@@ -19,33 +15,33 @@ var Map = {
             accessToken: 'pk.eyJ1IjoibWFyaWUzNzMxIiwiYSI6ImNqbnVsbTAwZjA2ZWoza3BueDYzZWExMHkifQ.XnCZw5jXMzssHhjWG7a-lA'
         }).addTo(this.reference);
 
-        // Récupérer stations Toulouse
+        // Récupération des stations de Toulouse
         StationsAPI.getStations(function(error) {
-            if(error == null) {
-                StationsAPI.stations.forEach(function(station) {
-                    if(station.number == 260) {
-                        station.available_bikes = 1;
-                    }
-                    if(Reservation.stationName && station.name == Reservation.stationName) {
-                        console.log("target station (b)", station.available_bikes);
-                        station.available_bikes--;
-                        console.log("target station (a)", station.available_bikes);
-                    }
-                    station.availability = Math.round((station.available_bikes / station.bike_stands) * 100);
-                    Map.addMarker(station);
-                });
-                Map.addMarkerClustersGroup();
-            }
+            StationsAPI.stations.forEach(function(station) {
+                // NOTE : permet de laisser un seu lvélo dispo poru tester
+                // if(station.number == 260) {
+                //     station.available_bikes = 1;
+                // }
+                station.availability = Math.round((station.available_bikes / station.bike_stands) * 100);
+
+                // NOTE : should be do from Reservation.load()
+                // NOTE : when reservation expires -> station.available_bikes++;
+                if(Reservation.stationName && station.name == Reservation.stationName) {
+                    station.available_bikes--;
+                }
+
+                Map.addMarker(station);
+            });
+            Map.addMarkerClustersGroup();
         });
     },
 
-    // Ajouter marqueurs
+    // Ajout un marqueur, définissant uen station, au cluster
     addMarker : function(station) {
         var divIcon = Marqueur.getIcon(station.availability);
 
         var newMarker = L.marker([station.position.lat, station.position.lng], {icon: divIcon}).on('click', function(e) {
             Map.selectedStation = station;
-            console.log(station.name + station.address + " full: "+ station.bike_stands+ " velo dispo: " +station.available_bikes, e.latlng);
             $(".encart").css("display", "block");
             $("#mapid").width("75%");
             $("#name_station").text(station.name);
@@ -55,18 +51,14 @@ var Map = {
             $("#available_bikes").text(station.available_bikes);
 
             StationsAPI.checkAvailability(station);
-            // console.log("checkAvailability");
 
             Map.reference.invalidateSize(true);
             Map.reference.setView(e.latlng, Map.reference.getZoom());
         });
         this.markerClusterGroup.addLayer(newMarker);
-        // .addTo(this.reference);
-
-        marqueurs.push(newMarker);
     },
 
-    // Finaliser l'ajout des clusters
+    // Ajout du cluster (ensemble de marqueur) à la map
     addMarkerClustersGroup : function() {
         this.reference.addLayer(this.markerClusterGroup);
     },
