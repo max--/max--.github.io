@@ -18,26 +18,22 @@ const Map = {
         // Récupération des stations de Toulouse
         StationsAPI.getStations(function(error) {
             StationsAPI.stations.forEach(function(station) {
-                // NOTE : permet de laisser un seu lvélo dispo poru tester
+                // NOTE : permet de laisser un seul vélo dispo pour tester StationsAPI.checkAvailability()
                 // if(station.number == 260) {
                 //     station.available_bikes = 1;
                 // }
                 station.availability = Math.round((station.available_bikes / station.bike_stands) * 100);
-
-                // NOTE : should be do from Reservation.load()
-                // NOTE : when reservation expires -> station.available_bikes++;
                 if(Reservation.stationName && station.name == Reservation.stationName) {
-                    station.available_bikes--;
-                    Map.selectedStation = station;
+                    Reservation.station = station;
+                    StationsAPI.subtractAvailability(Reservation.station);
                 }
-
                 Map.addMarker(station);
             });
             Map.addMarkerClustersGroup();
         });
     },
 
-    // Ajout un marqueur, définissant uen station, au cluster
+    // Ajout un marqueur, définissant une station, au cluster
     addMarker : function(station) {
         var divIcon = Marqueur.getIcon(station.availability);
 
@@ -53,6 +49,7 @@ const Map = {
 
             StationsAPI.checkAvailability(station);
 
+            //Gestion du zoom de la map
             Map.reference.invalidateSize(true);
             Map.reference.setView(e.latlng, Map.reference.getZoom());
         });

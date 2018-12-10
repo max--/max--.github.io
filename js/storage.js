@@ -1,8 +1,7 @@
 var StorageAPI = {
 
     // Sauvegarder les données
-    save : function() {
-        console.log("storage:save", Reservation);
+    save: function() {
         localStorage.setItem("reservationUserName", Reservation.name);
         localStorage.setItem("reservationUserFirstName", Reservation.firstName);
         sessionStorage.setItem("reservationStationName", Reservation.stationName);
@@ -10,20 +9,24 @@ var StorageAPI = {
     },
 
     // Charger les données stockées
-    load : function() {
+    load: function() {
+        var data = {
+            name: null,
+            firstName: null,
+            stationName: null,
+            endDate: null,
+        };
         if(localStorage.getItem("reservationUserName")) {
-            Reservation.name = localStorage.getItem("reservationUserName");
-            Reservation.firstName = localStorage.getItem("reservationUserFirstName");
-            console.log("storage", Reservation);
-            Reservation.fillInputs();
+            data.name = localStorage.getItem("reservationUserName");
+            data.firstName = localStorage.getItem("reservationUserFirstName");
+            Reservation.fillInputs(data.name, data.firstName);
         }
         if(sessionStorage.getItem("reservationStationName")) {
-            Reservation.stationName = sessionStorage.getItem("reservationStationName");
-            Reservation.endDate = sessionStorage.getItem("reservationEndDate");
-            Reservation.startTimer();
-            $('#confirmation_reservation').css("display", "block");   
-            $('#confirmation_reservation').text("Un vélo a bien été réservé")
+            data.stationName = sessionStorage.getItem("reservationStationName");
+            data.endDate = sessionStorage.getItem("reservationEndDate");
+            Reservation.addReservation(data);
         }
+        return data;
     },
 
     // Effacer session storage

@@ -5,7 +5,7 @@ const StationsAPI = {
     stations: [],
 
     // Récupération des données (stations)
-    getStations(next) {
+    getStations: function(next) {
         /*
             Note: 'next'
                 - next est une fonction passée en argument de getStations :: maps.js -> StationsAPI.getStations(function(error) { .. })
@@ -29,9 +29,9 @@ const StationsAPI = {
                     if(stationsParsed == null || stationsParsed == undefined) {
                         error = "absence de réponse";
                         console.error(`Impossible de récupérer la liste des stations : ${error}`);
-                    } else if(Array.isArray(stationsParsed) == false) { // Array.isArray permet de vérifier que stationParse est bien un tabnle (typeof [] --> "object" donc inutile ici)
+                    } else if(Array.isArray(stationsParsed) == false) { // Array.isArray permet de vérifier que stationParse est bien une table (typeof [] --> "object" donc inutile ici)
                         error = "réponse mal formatée";
-                         console.error(`Impossible de récupérer la liste des stations : ${error}`);
+                        console.error(`Impossible de récupérer la liste des stations : ${error}`);
                     } else {
                         this.stations = stationsParsed;
                         console.log(`Récupération de la liste des stations effectuée : ${this.stations.length} station(s) récupérées`);
@@ -46,17 +46,18 @@ const StationsAPI = {
     },
 
     // Soustraire nb de vélos dispo en cas de réservation
-    subtractAvailability(station) {
+    subtractAvailability: function(station) {
         station.available_bikes--;
-        if(station.name == Map.selectedStation.name) {
+        if(Map.selectedStation && station.name == Map.selectedStation.name) {
             $("#available_bikes").text(station.available_bikes);
         }
         StationsAPI.checkAvailability(station);
     },
 
-    addAvailability(station) {
+    // Rajouter un vélo lorsque réservation expire ou qu'on effectue une nouvelle réservation alors qu'il y en a déjà une en cours
+    addAvailability: function(station) {
         station.available_bikes++;
-        if(station.name == Map.selectedStation.name) {
+        if(Map.selectedStation && station.name == Map.selectedStation.name) {
             $("#available_bikes").text(station.available_bikes);
         }
         StationsAPI.checkAvailability(station);
