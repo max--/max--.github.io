@@ -43,9 +43,9 @@ const Slider = {
     setSize : function(){
         var pageWidth = $(window).width();
         if(pageWidth < 610) {
-            this.width = 300;
+            Slider.width = 300;
         } else {
-            this.width = 550;
+            Slider.width = 550;
         }
     },
 
