@@ -6,7 +6,7 @@ var mms_second = 1000;
 
 const min = 0.2;
 
-var Reservation = {
+const Reservation = {
     name: null,
     firstName: null,
     stationName: null,

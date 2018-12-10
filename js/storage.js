@@ -1,4 +1,4 @@
-var StorageAPI = {
+const StorageAPI = {
 
     // Sauvegarder les données
     save: function() {

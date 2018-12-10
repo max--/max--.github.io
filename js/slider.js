@@ -58,7 +58,9 @@ const Slider = {
                 Slider.currentSlide++;
             }
             Slider.isSliding = true;
-            Slider.elem.stop().animate({marginLeft: -Slider.currentSlide * Slider.width + "px"}, {
+            Slider.elem.stop().animate({
+                marginLeft: -Slider.currentSlide * Slider.width + "px",
+            }, {
                 duration: 1000,
                 complete: function() {
                     Slider.isSliding = false;
@@ -81,7 +83,9 @@ const Slider = {
                 Slider.currentSlide--;
             }
             Slider.isSliding = true;
-            Slider.elem.stop().animate({marginLeft: -Slider.currentSlide * Slider.width + "px"}, {
+            Slider.elem.stop().animate({
+                marginLeft: -Slider.currentSlide * Slider.width + "px",
+            }, {
                 duration: 1000,
                 complete: function() {
                     Slider.isSliding = false;
