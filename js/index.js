@@ -10,7 +10,7 @@
 // Réservation
 var reservationButton = null;
 
-var nameInput = null;
+var nameValue = null;
 var firstNameValue = null;
 var stationNameValue = null;
 var endDateValue = null;
@@ -37,9 +37,9 @@ $(document).ready(function() {
     // Canvas
     canvas.init();
 
-    var nameValue = $('#name');
-    var firstNameValue = $('#first_name');
-    var stationNameValue = $('#name_station');
+    nameValue = $('#name');
+    firstNameValue = $('#first_name');
+    stationNameValue = $('#name_station');
 
     // Réservation --> au clic
     reservationButton.on("click", function() {
