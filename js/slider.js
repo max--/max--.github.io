@@ -35,7 +35,7 @@ const Slider = {
         });
 
         this.setSize();
-        this.startAutoNext();
+        this.playSlider();
         this.listenKeyPress();
         this.listenResize();
     },
