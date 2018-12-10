@@ -64,7 +64,7 @@ var Reservation = {
         Reservation.station = null;
         $(".recap_resa").text("Aucune réservation en cours");
         Reservation.stopTimeOut = false;
-        Reservation.timeout = setTimeout(function () {
+        Reservation.timeoutHolder = setTimeout(function () {
             $(".resume").css("display", "none");
             $("#confirmation_reservation").css('display', 'none');
             Map.reference.invalidateSize(true);
